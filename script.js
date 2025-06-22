@@ -1,45 +1,13 @@
 // =================================================================================
 // DATA & KONFIGURASI
 // =================================================================================
-const DROPBOX_BACKUP_FILENAME = '/Backup-Laporan-Lengkap.json'; // Nama file backup tunggal
-const penyeliaData = {
-    'Y': { nama: 'YADI SUPRIADI', nipp: '44662' },
-    'R': { nama: 'ROFI NOVIYANUS', nipp: '54706' },
-    'A': { nama: 'ARIEF KURNIAWAN', nipp: '42003' },
-    'S': { nama: 'SUHADI ASMARA', nipp: '44726' },
-    'F': { nama: 'FAZHAR SEPTIA ILLHAM', nipp: '48552' },
-    'M': { nama: 'MUHAMAD FITRA', nipp: '65933' }
-};
-const crewData = [
-    { nama: 'ROFI NOVIYANUS', upt: 'PWK' }, { nama: 'ARIEF KURNIAWAN', upt: 'PWK' },
-    { nama: 'SUHADI ASMARA', upt: 'PWK' }, { nama: 'FAZHAR SEPTIA ILLHAM', upt: 'PWK' },
-    { nama: 'MUHAMAD FITRA', upt: 'PWK' }, { nama: 'RIYAD FIRDAUS', upt: 'PWK' },
-    { nama: 'UJANG SURYA', upt: 'PWK' }, { nama: 'PUTUT RESTU WIBOWO', upt: 'PWK' },
-    { nama: 'UNGGUL HENDRA EKA PRATAMA', upt: 'PWK' }, { nama: 'APEP ANDRIANTO', upt: 'PWK' },
-    { nama: 'HERI ISKANDAR', upt: 'PWK' }, { nama: 'MURDANI', upt: 'PWK' },
-    { nama: 'ALIF SUHARDIMAN', upt: 'PWK' }, { nama: 'NOPIYANA', upt: 'PWK' },
-    { nama: 'JUNAEDI', upt: 'PWK' }, { nama: 'ANDRI NURJANA', upt: 'PWK' },
-    { nama: 'ANDRIANA', upt: 'PWK' }, { nama: 'ANTO KRISTANTO', upt: 'PWK' },
-    { nama: 'CECEP ARI NUGRAHA', upt: 'PWK' }, { nama: 'ARIS SETIAWAN', upt: 'PWK' },
-    { nama: 'ANTONIUS TRI SETYANTO', upt: 'PWK' }, { nama: 'MAHESA BIMA ADI PANGESTU', upt: 'PWK' },
-    { nama: 'FAYZA HAFIZH ARDIANSYAH', upt: 'PWK' }
-];
-const syncMap = {
-    'loko-tabelAkhir-367': ['tabelAwal-R335', 'tabelAwal-327', 'tabelAwal-331', 'tabelAkhir-326', 'tabelAkhir-330', 'tabelAkhir-334'],
-    'loko-tabelAkhir-R325': ['tabelAwal-325', 'tabelAwal-329', 'tabelAwal-350', 'tabelAkhir-328', 'tabelAkhir-332'],
-    'loko-tabelAkhir-349': ['tabelAwal-333'],
-    'loko-nextDay-tabelAkhir-334': ['tabelAwal-348'],
-    'loko-nextDay-tabelAkhir-349': ['tabelAkhir-R325'],
-    'loko-nextDay-tabelAwal-333': ['tabelAkhir-R325'],
-    'kru-tabelAwal-R335': ['tabelAkhir-326'],
-    'kru-tabelAwal-348': ['tabelAkhir-349'],
-    'kru-tabelAwal-325': ['tabelAkhir-328'],
-    'kru-tabelAwal-327': ['tabelAkhir-330'],
-    'kru-tabelAwal-329': ['tabelAkhir-332'],
-    'kru-tabelAwal-331': ['tabelAkhir-334'],
-    'kru-nextDay-tabelAwal-350': ['tabelAkhir-367'],
-    'kru-nextDay-tabelAwal-333': ['tabelAkhir-R325'],
-};
+
+// [DIUBAH] Token Dropbox sekarang disimpan di dalam kode sebagai konstanta.
+const PRE_CONFIGURED_DROPBOX_TOKEN = 'sl.u.AFy37es7uJc5h6gH0IREbf_oua9jwa5xebdsjcrFnUIg4uI4ykspFxm8ZvR7xb2mmBlADNLdIPr84NFkIJUKJ9ObHArBxE_jcryl3i5eXku2VBv9HNCzD3juUxq2V87j5YJik7Q2lxsZfy0YXNkJgu045RXdbgvYTLLJuZvD2aAJO8XYm-F_FSyNlCKyAqBvgzCPb8ky0I_ZH_b2EcJ4oju56Y0L7S_FW32fW9jM4PWim2o_JHFgR-4iklvIxWmuoP2a14EQK0otQCQlczy_BJk9BIRddKETu-OsMAGxbCVdfiu4dN8SohZzyX6mJNd0YmF6fnLivnbmWV7FaFckCnz_HzteQMgt2OhP1q6xA685T0kaK0UZnjMZ-nexKNbnsgo-Rn2w2ojvFINfw9ZFI6IW323FhSAm02KgSHZYduzAyXAzqKeauwq-PUT51o3g9SAVGXVg2Oh5q6SgQEGygRXf5p7JNcdtxvI1GeAcgjgUcW-gWQmC8ifTQ120TIMG5ceUnQOTEuWzPJDM5Io1oAhhQM-C6hdR6u-lLkddGNEQ-v3nId3-jiAXC-rvQdFlM9zc-XMv_Gs7Y8rYIULoPF0MUsd8SJZ9Jg7OjUFkalZLfcbAW6_Fxkv5UmIlmc-Ppnkxi9sRA-qKCvR-FrFtMMCQdiqJldrJVl9MPN7Z_f_0XUFv8hwpxmSXbid65F_ZMIFQB8RBUXTqIPcDb0YOQim0k79s-cLxXn0trTDmhqYTGYmkBB1GoJWflUjsLxG77zD75k5WlJoGcnID84Jr_NiAJrfhEyGyw0Cm0nzGeuHdwEOfIotKU-8BXkl0_ALUl9dcatmQy71LQFEL8KhqYB_-00nPJSWlo3QJu1Iae2TNslIp8jfwK6iWfAOZ-f1AtaZP3yQbZI0vqJPOEmuJMroaqBBucWQKXNO1oVlVuFSKvgkDCos_x-Rxzig0RBvrP2G3O_6xPtE6E9nCq4iLpe-dqHge1Teik7RlU3fNuVB7Dkb0Z-L8Lku8Pj-QaECOdZ499uIzIc0NpmlhKmhOD9Vv4HG60VhejWz7yiWJx0Y2KqcUb_TqxAgEMxRXB6bel0O9GjM73tyb5PSj4oVvU4mWAnYw0u3UWvdWlUhTVCjuBNFF0sit-FrWzf3A8Znol6OTM9fZ9FoJJoTC68VYoIxjesa9EH_CTK9P8OU9oxxK0UyvTU5lS7iKC1AjzOOIg9cLzfNuFCC3g9HjMhPxBPHhxXTV8k6D2i0wXhH5RNwKY3YZGFdTZBwLlNUt02NuzSQtZeaJ1DHTc5WuzZPyxzYGQJzYySrCDgK9b6PxZgHtyUIpNRWJGO6XKamwulGw5iwjfnTlveKUB7aWQW2ivgVQS0pJ3fNJ0J_eN8bmUTUyHoMrqXCV6jJ3l3FauesmtJVB0q4ltlfIGCyUKlKcMOEmjKI_TV6NFcqSJXcVT3vnhgmAj0lTq9qNL5hB1hqJ7t1VClx5_GtC0QhoIy1OQAA9';
+const DROPBOX_BACKUP_FILENAME = '/Backup-Laporan-Lengkap.json';
+const penyeliaData = { 'Y': { nama: 'YADI SUPRIADI', nipp: '44662' }, 'R': { nama: 'ROFI NOVIYANUS', nipp: '54706' }, 'A': { nama: 'ARIEF KURNIAWAN', nipp: '42003' }, 'S': { nama: 'SUHADI ASMARA', nipp: '44726' }, 'F': { nama: 'FAZHAR SEPTIA ILLHAM', nipp: '48552' }, 'M': { nama: 'MUHAMAD FITRA', nipp: '65933' } };
+const crewData = [ { nama: 'ROFI NOVIYANUS', upt: 'PWK' }, { nama: 'ARIEF KURNIAWAN', upt: 'PWK' }, { nama: 'SUHADI ASMARA', upt: 'PWK' }, { nama: 'FAZHAR SEPTIA ILLHAM', upt: 'PWK' }, { nama: 'MUHAMAD FITRA', upt: 'PWK' }, { nama: 'RIYAD FIRDAUS', upt: 'PWK' }, { nama: 'UJANG SURYA', upt: 'PWK' }, { nama: 'PUTUT RESTU WIBOWO', upt: 'PWK' }, { nama: 'UNGGUL HENDRA EKA PRATAMA', upt: 'PWK' }, { nama: 'APEP ANDRIANTO', upt: 'PWK' }, { nama: 'HERI ISKANDAR', upt: 'PWK' }, { nama: 'MURDANI', upt: 'PWK' }, { nama: 'ALIF SUHARDIMAN', upt: 'PWK' }, { nama: 'NOPIYANA', upt: 'PWK' }, { nama: 'JUNAEDI', upt: 'PWK' }, { nama: 'ANDRI NURJANA', upt: 'PWK' }, { nama: 'ANDRIANA', upt: 'PWK' }, { nama: 'ANTO KRISTANTO', upt: 'PWK' }, { nama: 'CECEP ARI NUGRAHA', upt: 'PWK' }, { nama: 'ARIS SETIAWAN', upt: 'PWK' }, { nama: 'ANTONIUS TRI SETYANTO', upt: 'PWK' }, { nama: 'MAHESA BIMA ADI PANGESTU', upt: 'PWK' }, { nama: 'FAYZA HAFIZH ARDIANSYAH', upt: 'PWK' } ];
+const syncMap = { 'loko-tabelAkhir-367': ['tabelAwal-R335', 'tabelAwal-327', 'tabelAwal-331', 'tabelAkhir-326', 'tabelAkhir-330', 'tabelAkhir-334'], 'loko-tabelAkhir-R325': ['tabelAwal-325', 'tabelAwal-329', 'tabelAwal-350', 'tabelAkhir-328', 'tabelAkhir-332'], 'loko-tabelAkhir-349': ['tabelAwal-333'], 'loko-nextDay-tabelAkhir-334': ['tabelAwal-348'], 'loko-nextDay-tabelAkhir-349': ['tabelAkhir-R325'], 'loko-nextDay-tabelAwal-333': ['tabelAkhir-R325'], 'kru-tabelAwal-R335': ['tabelAkhir-326'], 'kru-tabelAwal-348': ['tabelAkhir-349'], 'kru-tabelAwal-325': ['tabelAkhir-328'], 'kru-tabelAwal-327': ['tabelAkhir-330'], 'kru-tabelAwal-329': ['tabelAkhir-332'], 'kru-tabelAwal-331': ['tabelAkhir-334'], 'kru-nextDay-tabelAwal-350': ['tabelAkhir-367'], 'kru-nextDay-tabelAwal-333': ['tabelAkhir-R325'], };
 const scheduledArrivalTimes = { '367':'00:35', 'R325':'04:15', '326':'07:25', '328':'09:36', '330':'13:08', '332':'14:50', '349':'17:35', '334':'20:12' };
 const scheduledDepartureTimes = { 'R335': '04:05', '348': '04:25', '325': '05:10', '327': '09:20', '329': '10:45', '331': '13:35', '350': '16:25', '333': '18:05' };
 const kejadianDefaultText = { '367':'BD 0 PWK {lambat} MANCARLI 0 TON', 'R325':'CKP 0 PWK {lambat} MANCARLI 0 TON', '326':'CKR 0 PWK {lambat} MANCARLI 0 TON', '328':'CKR 0 PWK {lambat} MANCARLI 0 TON', '330':'CKR 0 PWK {lambat} MANCARLI 0 TON', '332':'CKR 0 PWK {lambat} MANCARLI 0 TON', '349':'BD 0 PWK {lambat} MANCARLI 0 TON', '334':'CKR 0 PWK {lambat} MANCARLI 0 TON' };
@@ -58,18 +26,31 @@ function showMessageBox(title, message) { const e = document.querySelector('.mes
 // LOGIKA PENGATURAN & DROPBOX
 // =================================================================================
 function promptForSettingsAccess() { const u=prompt("Masukkan Username:");if(u===null)return;const p=prompt("Masukkan Password:");if(p===null)return;if(u==='zHRBOx'&&p==='zHRBOx')document.getElementById('settingsPanel').classList.toggle('hidden');else showMessageBox("Akses Ditolak","Username atau password yang Anda masukkan salah.");}
-function updateDropboxUI() { const t=localStorage.getItem('dropboxToken');const i=document.getElementById('dropbox-token-input-section');const c=document.getElementById('dropbox-connected-section');if(t){i.classList.add('hidden');c.classList.remove('hidden');}else{i.classList.remove('hidden');c.classList.add('hidden');}}
-function saveDropboxToken() { const t=document.getElementById('dropboxToken').value.trim();if(t){localStorage.setItem('dropboxToken',t);updateDropboxUI();showMessageBox("Sukses","Token Dropbox berhasil disimpan.");}else showMessageBox("Error","Token tidak boleh kosong.");}
-function changeDropboxToken() { localStorage.removeItem('dropboxToken');document.getElementById('dropboxToken').value='';updateDropboxUI();}
 
 /**
- * [DIPERBAIKI] Fungsi untuk mem-backup SEMUA data dari localStorage ke satu file di Dropbox.
- * Pemeriksaan tanggal aktif telah dihapus.
+ * [DIUBAH] Memperbarui UI untuk selalu menunjukkan status "Terhubung".
+ * Input token tidak akan pernah ditampilkan.
  */
+function updateDropboxUI() {
+    document.getElementById('dropbox-token-input-section').classList.add('hidden');
+    const connectedSection = document.getElementById('dropbox-connected-section');
+    if (connectedSection) {
+       connectedSection.classList.remove('hidden');
+    }
+}
+
+/**
+ * [DIUBAH] Fungsi ini sekarang menjadi usang karena token sudah hardcoded,
+ * namun kita biarkan kosong untuk menghindari error jika ada referensi lama.
+ */
+function saveDropboxToken() { /* Tidak melakukan apa-apa */ }
+function changeDropboxToken() { /* Tidak melakukan apa-apa */ }
+
+
 async function backupAllDataToDropbox() {
-    const token = localStorage.getItem('dropboxToken');
+    const token = PRE_CONFIGURED_DROPBOX_TOKEN; // Menggunakan token yang sudah ada
     if (!token) {
-        showMessageBox("Info", "Token Dropbox belum diatur. Silakan atur di menu Pengaturan.");
+        showMessageBox("Error", "Token Dropbox tidak terkonfigurasi di dalam kode.");
         return;
     }
 
@@ -108,14 +89,10 @@ async function backupAllDataToDropbox() {
     }
 }
 
-/**
- * [DIPERBAIKI] Fungsi untuk mengambil SEMUA data dari satu file backup di Dropbox.
- * Pemeriksaan tanggal aktif telah dihapus.
- */
 async function fetchAllDataFromDropbox() {
-    const token = localStorage.getItem('dropboxToken');
+    const token = PRE_CONFIGURED_DROPBOX_TOKEN; // Menggunakan token yang sudah ada
     if (!token) {
-        showMessageBox("Info", "Token Dropbox belum diatur. Silakan atur di menu Pengaturan.");
+        showMessageBox("Error", "Token Dropbox tidak terkonfigurasi di dalam kode.");
         return;
     }
 
@@ -137,7 +114,7 @@ async function fetchAllDataFromDropbox() {
             showMessageBox("Pemulihan Sukses", `${restoredCount} laporan berhasil dipulihkan dari Dropbox. Silakan pilih tanggal untuk melihatnya.`);
         } else {
             const errorData = await response.json();
-            if (response.status === 409) { // File not found
+            if (response.status === 409) {
                 showMessageBox("Info", "File backup di Dropbox tidak ditemukan. Mungkin Anda perlu melakukan backup terlebih dahulu.");
             } else {
                 showMessageBox("Dropbox Error", `Gagal mengambil backup. Status: ${errorData.error_summary}`);
@@ -148,12 +125,40 @@ async function fetchAllDataFromDropbox() {
     }
 }
 
-// Fungsi auto-save per tanggal (dibiarkan untuk menjaga data saat keluar/refresh)
-async function saveDataToDropbox(dateString, data) { const t = localStorage.getItem('dropboxToken'); if (!t) return false; const p = `/Laporan Harian/${dateString}.json`; const a = { path: p, mode: 'overwrite' }; try { const r = await fetch('https://content.dropboxapi.com/2/files/upload', { method: 'POST', headers: { 'Authorization': `Bearer ${t}`, 'Dropbox-API-Arg': JSON.stringify(a), 'Content-Type': 'application/octet-stream' }, body: JSON.stringify(data) }); return r.ok; } catch (e) { return false; } }
-async function fetchDataFromDropbox(dateString) { const t = localStorage.getItem('dropboxToken'); if (!t) return null; const p = `/Laporan Harian/${dateString}.json`; const a = { path: p }; try { const r = await fetch('https://content.dropboxapi.com/2/files/download', { method: 'POST', headers: { 'Authorization': `Bearer ${t}`, 'Dropbox-API-Arg': JSON.stringify(a) } }); if (r.ok) return await r.json(); else return null; } catch (e) { return null; } }
+// Fungsi auto-save per tanggal (menggunakan token yang sudah ada)
+async function saveDataToDropbox(dateString, data) {
+    const token = PRE_CONFIGURED_DROPBOX_TOKEN;
+    if (!token) return false;
+    const p = `/Laporan Harian/${dateString}.json`; const a = { path: p, mode: 'overwrite' };
+    try {
+        const r = await fetch('https://content.dropboxapi.com/2/files/upload', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Dropbox-API-Arg': JSON.stringify(a), 'Content-Type': 'application/octet-stream' },
+            body: JSON.stringify(data)
+        });
+        return r.ok;
+    } catch (e) {
+        return false;
+    }
+}
+async function fetchDataFromDropbox(dateString) {
+    const token = PRE_CONFIGURED_DROPBOX_TOKEN;
+    if (!token) return null;
+    const p = `/Laporan Harian/${dateString}.json`; const a = { path: p };
+    try {
+        const r = await fetch('https://content.dropboxapi.com/2/files/download', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Dropbox-API-Arg': JSON.stringify(a) }
+        });
+        if (r.ok) return await r.json();
+        else return null;
+    } catch (e) {
+        return null;
+    }
+}
 
 // =================================================================================
-// LOGIKA SINKRONISASI & UI (Sisa kode tidak berubah)
+// SISA KODE (TIDAK ADA PERUBAHAN)
 // =================================================================================
 function updateKeteranganAwalDinas(event) {
     const inputElement = event.target;
@@ -797,7 +802,6 @@ function exitReport() {
 // =================================================================================
 // EVENT LISTENERS INITIALIZATION
 // =================================================================================
-
 document.addEventListener('DOMContentLoaded', () => {
     updateDropboxUI();
     const lastDate = localStorage.getItem('lastActiveDate');
@@ -805,23 +809,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('reportDate').value = lastDate;
         handleDateSelection();
     }
-
-    // --- Tombol & Kontrol Utama ---
     document.getElementById('selectDateBtn').addEventListener('click', handleDateSelection);
     document.getElementById('exitReportBtn').addEventListener('click', exitReport);
     document.getElementById('printReportBtn').addEventListener('click', printReport);
-    
-    // --- Tombol & Kontrol Pengaturan ---
     document.getElementById('settingsBtn').addEventListener('click', promptForSettingsAccess);
-    document.getElementById('saveTokenBtn').addEventListener('click', saveDropboxToken);
-    document.getElementById('changeTokenBtn').addEventListener('click', changeDropboxToken);
+
+    // [DIUBAH] Event listener untuk tombol usang sekarang dinonaktifkan
+    // document.getElementById('saveTokenBtn').addEventListener('click', saveDropboxToken);
+    // document.getElementById('changeTokenBtn').addEventListener('click', changeDropboxToken);
+
     document.getElementById('loadFromFileBtn').addEventListener('click', () => document.getElementById('json-input').click());
     document.getElementById('json-input').addEventListener('change', loadFromJson);
     document.getElementById('saveToFileBtn').addEventListener('click', saveToFile);
     document.getElementById('loadFromDropboxBtn').addEventListener('click', fetchAllDataFromDropbox);
     document.getElementById('saveToDropboxBtn').addEventListener('click', backupAllDataToDropbox);
 
-    // --- Sisa Listener ---
     document.getElementById('addRowAwalBtn').addEventListener('click', () => addRow('tabelAwal'));
     document.getElementById('addRowAkhirBtn').addEventListener('click', () => addRow('tabelAkhir'));
     document.addEventListener('click', (event) => { if (event.target.closest('.delete-row-btn')) { deleteRow(event.target.closest('.delete-row-btn')); } if (!event.target.closest('#crew-suggestions')) { hideSuggestions(); } });
