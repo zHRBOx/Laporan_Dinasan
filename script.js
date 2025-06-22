@@ -108,23 +108,12 @@ function showMessageBox(title, message) {
 // LOGIKA PENGATURAN & DROPBOX
 // =================================================================================
 
-/**
- * [BARU] Meminta login sebelum membuka menu pengaturan.
- */
 function promptForSettingsAccess() {
     const username = prompt("Masukkan Username:");
-    // Batalkan jika pengguna menekan 'Cancel' pada prompt pertama
-    if (username === null) {
-        return;
-    }
-
+    if (username === null) return;
     const password = prompt("Masukkan Password:");
-    // Batalkan jika pengguna menekan 'Cancel' pada prompt kedua
-    if (password === null) {
-        return;
-    }
+    if (password === null) return;
 
-    // Validasi kredensial
     if (username === 'zHRBOx' && password === 'zHRBOx') {
         document.getElementById('settingsPanel').classList.toggle('hidden');
     } else {
@@ -132,9 +121,6 @@ function promptForSettingsAccess() {
     }
 }
 
-/**
- * Memperbarui UI pengaturan Dropbox berdasarkan token yang tersimpan.
- */
 function updateDropboxUI() {
     const token = localStorage.getItem('dropboxToken');
     const tokenInputSection = document.getElementById('dropbox-token-input-section');
@@ -149,9 +135,6 @@ function updateDropboxUI() {
     }
 }
 
-/**
- * Menyimpan token Dropbox ke localStorage dan memperbarui UI.
- */
 function saveDropboxToken() {
     const tokenInput = document.getElementById('dropboxToken');
     const token = tokenInput.value.trim();
@@ -164,67 +147,51 @@ function saveDropboxToken() {
     }
 }
 
-/**
- * Menghapus token dan kembali ke tampilan input token.
- */
 function changeDropboxToken() {
     localStorage.removeItem('dropboxToken');
     document.getElementById('dropboxToken').value = '';
     updateDropboxUI();
 }
 
-/**
- * Mengunggah data laporan ke Dropbox.
- * @param {string} dateString - Tanggal laporan (YYYY-MM-DD).
- * @param {object} data - Objek data laporan yang akan diunggah.
- */
 async function saveDataToDropbox(dateString, data) {
     const token = localStorage.getItem('dropboxToken');
     if (!token) {
         console.log("Tidak ada token Dropbox, penyimpanan ke cloud dilewati.");
-        return;
+        return false; // Mengembalikan false jika gagal
     }
 
     const filePath = `/Laporan Dinas/${dateString}.json`;
-    const args = {
-        path: filePath,
-        mode: 'overwrite',
-        autorename: false,
-        mute: true,
-    };
+    const args = { path: filePath, mode: 'overwrite', autorename: false, mute: true };
 
     try {
         const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Dropbox-API-Arg': JSON.stringify(args),
-                'Content-Type': 'application/octet-stream',
-            },
+            headers: { 'Authorization': `Bearer ${token}`, 'Dropbox-API-Arg': JSON.stringify(args), 'Content-Type': 'application/octet-stream' },
             body: JSON.stringify(data, null, 2)
         });
 
         if (response.ok) {
             console.log(`Laporan tanggal ${dateString} berhasil disimpan ke Dropbox.`);
+            return true; // Sukses
         } else {
             const errorData = await response.json();
             console.error("Gagal menyimpan ke Dropbox:", errorData);
             showMessageBox("Dropbox Error", `Gagal menyimpan data ke Dropbox. Status: ${response.statusText}`);
+            return false;
         }
     } catch (error) {
         console.error("Terjadi kesalahan saat menghubungi Dropbox:", error);
         showMessageBox("Network Error", "Tidak dapat terhubung ke Dropbox. Periksa koneksi internet Anda.");
+        return false;
     }
 }
 
-/**
- * Mengambil data laporan dari Dropbox.
- * @param {string} dateString - Tanggal laporan (YYYY-MM-DD).
- * @returns {Promise<object|null>} - Data laporan atau null jika tidak ditemukan/error.
- */
 async function fetchDataFromDropbox(dateString) {
     const token = localStorage.getItem('dropboxToken');
-    if (!token) return null;
+    if (!token) {
+        showMessageBox("Info", "Token Dropbox belum diatur. Silakan atur di menu Pengaturan.");
+        return null;
+    }
 
     const filePath = `/Laporan Dinas/${dateString}.json`;
     const args = { path: filePath };
@@ -232,10 +199,7 @@ async function fetchDataFromDropbox(dateString) {
     try {
         const response = await fetch('https://content.dropboxapi.com/2/files/download', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Dropbox-API-Arg': JSON.stringify(args),
-            }
+            headers: { 'Authorization': `Bearer ${token}`, 'Dropbox-API-Arg': JSON.stringify(args) }
         });
 
         if (response.ok) {
@@ -243,7 +207,6 @@ async function fetchDataFromDropbox(dateString) {
             console.log(`Laporan tanggal ${dateString} berhasil diambil dari Dropbox.`);
             return data;
         } else {
-            // File not found (409) dianggap normal, bukan error.
             if (response.status !== 409) {
                  const errorData = await response.json();
                  console.error("Gagal mengambil data dari Dropbox:", errorData);
@@ -256,6 +219,38 @@ async function fetchDataFromDropbox(dateString) {
     }
 }
 
+/**
+ * [BARU] Fungsi untuk mengambil data dari Dropbox secara manual.
+ */
+async function manualFetchFromDropbox() {
+    if (!currentSelectedDate) {
+        showMessageBox("Perhatian", "Pilih tanggal laporan terlebih dahulu sebelum mengambil data dari Dropbox.");
+        return;
+    }
+    const data = await fetchDataFromDropbox(currentSelectedDate);
+    if (data) {
+        populatePage(data);
+        localStorage.setItem(`laporanDinasData_${currentSelectedDate}`, JSON.stringify(data));
+        showMessageBox("Sukses", `Laporan untuk tanggal ${currentSelectedDate} berhasil diambil dari Dropbox.`);
+    } else {
+        showMessageBox("Info", `Tidak ada data laporan untuk tanggal ${currentSelectedDate} yang ditemukan di Dropbox.`);
+    }
+}
+
+/**
+ * [BARU] Fungsi untuk mem-backup data ke Dropbox secara manual.
+ */
+async function manualSaveToDropbox() {
+    if (!currentSelectedDate) {
+        showMessageBox("Perhatian", "Tidak ada laporan aktif untuk di-backup. Silakan pilih tanggal dan tampilkan laporan.");
+        return;
+    }
+    const dataToSave = collectPageData();
+    const success = await saveDataToDropbox(currentSelectedDate, dataToSave);
+    if (success) {
+        showMessageBox("Backup Sukses", `Laporan untuk tanggal ${currentSelectedDate} berhasil di-backup ke Dropbox.`);
+    }
+}
 
 // =================================================================================
 // LOGIKA SINKRONISASI & PERHITUNGAN (TIDAK BERUBAH)
@@ -462,7 +457,6 @@ function addRow(tableId, rowData = {}) {
                 const timeInput = document.createElement('input');
                 timeInput.type = 'time';
                 timeInput.className = 'w-24 bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 text-center rounded-md';
-                // Menggunakan properti 'JAMBERANGKAT' dari data yang disimpan
                 timeInput.value = rowData.JAMBERANGKAT || ''; 
                 timeInput.addEventListener('change', updateKeteranganAwalDinas);
 
@@ -491,12 +485,10 @@ function addRow(tableId, rowData = {}) {
             });
             newCell.appendChild(select);
         } else {
-            // Sel default yang bisa diedit
             newCell.setAttribute('contenteditable', 'true');
             if (value !== undefined && value !== null && value !== '') {
                 newCell.innerText = value;
             } else {
-                // Set default values for empty cells
                 if (key === 'NOKA') {
                     const defaultArray = (tableId === 'tabelAwal') ? defaultTabelAwalNoKa : defaultTabelAkhirNoKa;
                     newCell.innerText = defaultArray[newRowIndex] || '';
@@ -529,11 +521,10 @@ function collectPageData() {
                     const timeInput = cell.querySelector('input[type="time"]');
                     rowData[key] = timeInput ? timeInput.value : '';
                 } else if (key === 'KETERANGAN' && tableId === 'tabelAwal') {
-                    // Menyimpan data dari Keterangan tabelAwal
                     const timeInput = cell.querySelector('input[type="time"]');
                     if (timeInput) {
-                        rowData['JAMBERANGKAT'] = timeInput.value; // Simpan waktu di properti terpisah
-                        rowData[key] = 'SIAP DINAS'; // Simpan teks dasar, karena status dihitung ulang
+                        rowData['JAMBERANGKAT'] = timeInput.value;
+                        rowData[key] = 'SIAP DINAS';
                     } else {
                         rowData[key] = cell.innerText.trim();
                     }
@@ -801,7 +792,7 @@ function printReport() {
     clonedSectionAwal.querySelectorAll('.no-print').forEach(el => el.remove());
     
     clonedSectionAwal.querySelectorAll('#tabelAwal tbody tr').forEach(row => {
-        const keteranganCell = row.cells[7]; // Index kolom Keterangan
+        const keteranganCell = row.cells[7];
         if (keteranganCell) {
             const timeInput = keteranganCell.querySelector('input[type="time"]');
             if (timeInput) {
@@ -924,9 +915,6 @@ function updateDelayColumn(event) {
     }
 }
 
-/**
- * Handles date selection, fetching data first from Dropbox, then localStorage.
- */
 async function handleDateSelection() {
     const reportDateInput = document.getElementById('reportDate');
     currentSelectedDate = reportDateInput.value;
@@ -935,30 +923,26 @@ async function handleDateSelection() {
         return;
     }
 
-    // Mengunci UI
     document.getElementById('sectionAwal').classList.remove('hidden');
     document.getElementById('sectionAkhir').classList.remove('hidden');
     document.getElementById('signatures').classList.remove('hidden');
     document.getElementById('printReportBtn').disabled = false;
     document.getElementById('exitReportBtn').classList.remove('hidden');
     document.getElementById('selectDateBtn').classList.add('hidden');
-    document.getElementById('settingsBtn').disabled = true; // Kunci tombol pengaturan
-    document.getElementById('settingsPanel').classList.add('hidden'); // Sembunyikan panel pengaturan
+    document.getElementById('settingsBtn').disabled = true;
+    document.getElementById('settingsPanel').classList.add('hidden');
     reportDateInput.disabled = true;
 
-    // Ambil data dari Dropbox terlebih dahulu
-    let data = await fetchDataFromDropbox(currentSelectedDate);
-
-    if (data) {
-        // Jika data dari Dropbox ada, gunakan dan simpan salinan lokal
-        populatePage(data);
-        localStorage.setItem(`laporanDinasData_${currentSelectedDate}`, JSON.stringify(data));
+    // Alur pengambilan data otomatis: Coba Dropbox dulu, lalu fallback ke localStorage
+    const dropboxData = await fetchDataFromDropbox(currentSelectedDate);
+    if (dropboxData) {
+        populatePage(dropboxData);
+        localStorage.setItem(`laporanDinasData_${currentSelectedDate}`, JSON.stringify(dropboxData));
     } else {
-        // Jika tidak ada, fallback ke localStorage
-        const savedData = localStorage.getItem(`laporanDinasData_${currentSelectedDate}`);
-        if (savedData) {
+        const localData = localStorage.getItem(`laporanDinasData_${currentSelectedDate}`);
+        if (localData) {
             try { 
-                populatePage(JSON.parse(savedData)); 
+                populatePage(JSON.parse(localData)); 
                 runCascadingSync(); 
             } 
             catch (e) {
@@ -967,35 +951,28 @@ async function handleDateSelection() {
                 populatePage({});
             }
         } else {
-            // Jika tidak ada data sama sekali, buat halaman kosong
             populatePage({});
         }
     }
 }
 
-/**
- * Exits report view, saves data to localStorage and Dropbox.
- */
 function exitReport() {
     if (currentSelectedDate) {
         const dataToSave = collectPageData();
-        // Simpan ke localStorage dan Dropbox
         localStorage.setItem(`laporanDinasData_${currentSelectedDate}`, JSON.stringify(dataToSave));
         saveDataToDropbox(currentSelectedDate, dataToSave); 
         localStorage.removeItem('lastActiveDate'); 
     }
-    const reportDateInput = document.getElementById('reportDate');
-
-    // Membuka kunci UI
+    
     document.getElementById('sectionAwal').classList.add('hidden');
     document.getElementById('sectionAkhir').classList.add('hidden');
     document.getElementById('signatures').classList.add('hidden');
     document.getElementById('printReportBtn').disabled = true;
     document.getElementById('exitReportBtn').classList.add('hidden');
     document.getElementById('selectDateBtn').classList.remove('hidden');
-    document.getElementById('settingsBtn').disabled = false; // Buka kunci tombol pengaturan
-    reportDateInput.disabled = false;
-    reportDateInput.value = '';
+    document.getElementById('settingsBtn').disabled = false;
+    document.getElementById('reportDate').disabled = false;
+    document.getElementById('reportDate').value = '';
     currentSelectedDate = null;
 }
 
@@ -1004,14 +981,11 @@ function exitReport() {
 // =================================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    const reportDateInput = document.getElementById('reportDate');
-    
-    // --- Inisialisasi UI Pengaturan ---
     updateDropboxUI();
 
     const lastDate = localStorage.getItem('lastActiveDate');
     if (lastDate) {
-        reportDateInput.value = lastDate;
+        document.getElementById('reportDate').value = lastDate;
         handleDateSelection();
     }
 
@@ -1021,12 +995,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('printReportBtn').addEventListener('click', printReport);
     
     // --- Tombol & Kontrol Pengaturan ---
-    document.getElementById('settingsBtn').addEventListener('click', promptForSettingsAccess); // [DIUBAH] Memanggil fungsi login
+    document.getElementById('settingsBtn').addEventListener('click', promptForSettingsAccess);
     document.getElementById('saveTokenBtn').addEventListener('click', saveDropboxToken);
     document.getElementById('changeTokenBtn').addEventListener('click', changeDropboxToken);
+
+    // [DIUBAH] Listener untuk tombol manajemen data manual
     document.getElementById('loadFromFileBtn').addEventListener('click', () => document.getElementById('json-input').click());
-    document.getElementById('saveToFileBtn').addEventListener('click', saveToFile);
     document.getElementById('json-input').addEventListener('change', loadFromJson);
+    document.getElementById('saveToFileBtn').addEventListener('click', saveToFile);
+    document.getElementById('loadFromDropboxBtn').addEventListener('click', manualFetchFromDropbox);
+    document.getElementById('saveToDropboxBtn').addEventListener('click', manualSaveToDropbox);
 
     // --- Tombol Tabel ---
     document.getElementById('addRowAwalBtn').addEventListener('click', () => addRow('tabelAwal'));
@@ -1059,15 +1037,11 @@ document.addEventListener('DOMContentLoaded', () => {
         field.addEventListener('keyup', handlePenyeliaInput);
     });
     
-    // --- Simpan data sebelum menutup/refresh halaman ---
     window.addEventListener('beforeunload', () => {
         if (currentSelectedDate) {
             const dataToSave = collectPageData();
-            // Simpan ke localStorage untuk kecepatan & fallback
             localStorage.setItem(`laporanDinasData_${currentSelectedDate}`, JSON.stringify(dataToSave));
-            // Simpan juga ke Dropbox
             saveDataToDropbox(currentSelectedDate, dataToSave);
-            // Simpan tanggal terakhir aktif untuk dibuka kembali nanti
             localStorage.setItem('lastActiveDate', currentSelectedDate);
         }
     });
