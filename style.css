@@ -1,0 +1,120 @@
+/* Menggunakan font Roboto untuk tampilan yang lebih modern */
+body {
+    font-family: 'Roboto', sans-serif;
+    /* Ensure the body takes full height for proper flex/grid layouts */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+/* Menghilangkan outline default saat elemen difokus */
+[contenteditable="true"]:focus {
+    outline: none;
+}
+/* Memberi border saat elemen diedit untuk kejelasan */
+[contenteditable="true"]:focus {
+    box-shadow: 0 0 0 2px #3b82f6; /* ring-2 ring-blue-500 */
+    border-radius: 4px;
+}
+/* Placeholder styling for contenteditable */
+[contenteditable="true"]:empty:before {
+    content: attr(data-placeholder);
+    color: #9ca3af; /* Tailwind's gray-400 */
+    pointer-events: none;
+}
+
+/* --- STYLES FOR PRINTING --- */
+@page {
+    size: A4 landscape; /* Mengatur orientasi cetak menjadi landscape */
+    margin: 0.5cm;
+}
+
+@media print {
+    body * {
+        visibility: hidden; /* Sembunyikan semua elemen di body */
+    }
+    #print-area, #print-area * {
+        visibility: visible; /* Tampilkan hanya area cetak */
+    }
+    #print-area .no-print {
+        display: none; /* Sembunyikan elemen dengan kelas no-print di dalam area cetak */
+    }
+    #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    .print-page {
+        page-break-after: always; /* Pisahkan setiap .print-page menjadi halaman baru */
+        width: 287mm; /* Lebar konten di dalam kertas A4 landscape dengan margin */
+        height: 200mm;
+        display: flex;
+        flex-direction: column;
+    }
+    .print-page:last-child {
+        page-break-after: auto;
+    }
+
+    html, body {
+        font-size: 9pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    /* Penyesuaian ukuran font dan margin untuk cetak */
+    .print-header h1 { font-size: 14pt !important; }
+    .print-header h2 { font-size: 12pt !important; }
+    .print-header h3 { font-size: 11pt !important; }
+    .print-section { margin-bottom: 1rem !important; }
+    .print-title { font-size: 10pt !important; margin-bottom: 0.5rem !important; }
+    .print-table { font-size: 8pt !important; }
+    .print-th { 
+        white-space: nowrap; /* Memaksa header tabel menjadi satu baris */
+    }
+    .print-th, .print-td { padding: 3px !important; }
+    .print-signatures { 
+        margin-top: auto !important; /* Mendorong tanda tangan ke bawah halaman */
+    }
+    /* Menghilangkan style yang tidak perlu karena struktur baru */
+    .print-signature-block .name { 
+        margin-top: 0 !important;
+    }
+    .print-footer { padding-top: 1rem !important; font-size: 7pt !important; }
+}
+
+/* Styles for the dynamically created suggestions dropdown */
+#crew-suggestions {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000; /* Ensure it's above other elements */
+    min-width: 150px; /* Adjust as needed */
+    text-align: left; /* Align text to left inside dropdown */
+}
+
+.suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.875rem; /* Tailwind's text-sm */
+    color: #374151; /* Tailwind's gray-700 */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.suggestion-item:hover {
+    background-color: #f3f4f6; /* Tailwind's gray-100 */
+}
+
+/* Style untuk tombol yang dinonaktifkan */
+button:disabled, input:disabled {
+    background-color: #d1d5db; /* gray-300 */
+    color: #6b7280; /* gray-500 */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+button:disabled:hover {
+    background-color: #d1d5db; /* Mencegah perubahan warna saat hover */
+}
